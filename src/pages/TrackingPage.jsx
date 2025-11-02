@@ -14,26 +14,37 @@ const TrackingPage = () => {
     e.preventDefault();
     if (trackingNumber.trim()) {
       // In a real application, you would fetch tracking data from an API
-      // Here we'll simulate tracking data
-      setTrackingData({
-        number: trackingNumber,
-        status: 'In Transit',
-        origin: 'Mumbai, India',
-        destination: 'New York, USA',
-        estimatedDelivery: '2025-09-20',
-        currentLocation: 'Dubai, UAE',
-        shipDate: '2025-09-05',
-        service: 'Express Air Freight',
-        weight: '250 kg',
-        pieces: '4',
-        updates: [
-          { date: '2025-09-11 08:30', location: 'Dubai, UAE', status: 'Arrived at transit facility', icon: <FaPlane /> },
-          { date: '2025-09-08 14:45', location: 'Mumbai, India', status: 'Departed from origin', icon: <FaPlane /> },
-          { date: '2025-09-07 09:15', location: 'Mumbai, India', status: 'Cleared customs', icon: <FaBoxOpen /> },
-          { date: '2025-09-06 16:20', location: 'Mumbai, India', status: 'Processed at origin facility', icon: <FaBoxOpen /> },
-          { date: '2025-09-05 10:00', location: 'Mumbai, India', status: 'Shipment picked up', icon: <FaTruck /> }
-        ]
-      });
+      // For demo purposes, we'll show tracking data for specific numbers
+      // Otherwise show "No tracking found"
+      
+      // Example valid tracking numbers for demo
+      const validTrackingNumbers = ['TNS123456', 'TNS987654', 'DEMO123', 'TEST456'];
+      
+      if (validTrackingNumbers.includes(trackingNumber.toUpperCase())) {
+        // Simulate tracking data for valid numbers
+        setTrackingData({
+          number: trackingNumber,
+          status: 'In Transit',
+          origin: 'Mumbai, India',
+          destination: 'New York, USA',
+          estimatedDelivery: '2025-09-20',
+          currentLocation: 'Dubai, UAE',
+          shipDate: '2025-09-05',
+          service: 'Express Air Freight',
+          weight: '250 kg',
+          pieces: '4',
+          updates: [
+            { date: '2025-09-11 08:30', location: 'Dubai, UAE', status: 'Arrived at transit facility', icon: <FaPlane /> },
+            { date: '2025-09-08 14:45', location: 'Mumbai, India', status: 'Departed from origin', icon: <FaPlane /> },
+            { date: '2025-09-07 09:15', location: 'Mumbai, India', status: 'Cleared customs', icon: <FaBoxOpen /> },
+            { date: '2025-09-06 16:20', location: 'Mumbai, India', status: 'Processed at origin facility', icon: <FaBoxOpen /> },
+            { date: '2025-09-05 10:00', location: 'Mumbai, India', status: 'Shipment picked up', icon: <FaTruck /> }
+          ]
+        });
+      } else {
+        // No tracking found for this number
+        setTrackingData(null);
+      }
       setIsSubmitted(true);
     }
   };
@@ -106,6 +117,24 @@ const TrackingPage = () => {
                 Track Shipment
               </button>
             </form>
+            
+            {isSubmitted && !trackingData && (
+              <div style={{
+                marginTop: '1.5rem',
+                padding: '1.5rem',
+                backgroundColor: '#fef2f2',
+                border: '1px solid #fecaca',
+                borderRadius: '0.375rem',
+                textAlign: 'center'
+              }}>
+                <p style={{ color: '#dc2626', fontWeight: '600', fontSize: '1.125rem' }}>
+                  No tracking found with this number
+                </p>
+                <p style={{ color: '#991b1b', marginTop: '0.5rem' }}>
+                  Please check your tracking number and try again
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>

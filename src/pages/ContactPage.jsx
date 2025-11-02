@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
+import emailjs from '@emailjs/browser';
 
 const ContactPage = () => {
 
@@ -13,6 +14,8 @@ const ContactPage = () => {
   
   const [submitted, setSubmitted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState(null);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,11 +25,40 @@ const ContactPage = () => {
     }));
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real application, you would send the data to a server
-    console.log('Form submitted:', formData);
-    setSubmitted(true);
+    setIsSending(true);
+    setError(null);
+
+    try {
+      // EmailJS configuration
+      const serviceID = 'service_k04lknn'; // Replace with your EmailJS service ID
+      const templateID = 'template_7d9pqxr'; // Replace with your EmailJS template ID
+      const publicKey = '70kSXJtuWQQRrwL_-'; // Replace with your EmailJS public key
+
+      // Send email using EmailJS
+      const result = await emailjs.send(
+        serviceID,
+        templateID,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+          to_email: 'rounakcoc567@gmail.com' // Replace with your email
+        },
+        publicKey
+      );
+
+      console.log('Email sent successfully:', result);
+      setSubmitted(true);
+      setIsSending(false);
+    } catch (err) {
+      console.error('Failed to send email:', err);
+      setError('Failed to send message. Please try again or contact us directly.');
+      setIsSending(false);
+    }
   };
   
   return (
@@ -136,6 +168,20 @@ const ContactPage = () => {
             ) : (
               <>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>Send Us a Message</h2>
+                
+                {error && (
+                  <div style={{
+                    backgroundColor: '#fee2e2',
+                    border: '1px solid #ef4444',
+                    color: '#dc2626',
+                    padding: '1rem',
+                    borderRadius: '0.375rem',
+                    marginBottom: '1rem'
+                  }}>
+                    {error}
+                  </div>
+                )}
+
                 <form onSubmit={handleSubmit}>
                   <div style={{ 
                     display: 'grid',
@@ -239,20 +285,22 @@ const ContactPage = () => {
                     <div style={{ gridColumn: '1 / -1' }} className="md-col-span-2">
                       <button
                         type="submit"
+                        disabled={isSending}
                         style={{ 
                           padding: '0.75rem 2rem',
-                          backgroundColor: isHovered ? '#1d4ed8' : '#2563eb',
+                          backgroundColor: isSending ? '#9ca3af' : (isHovered ? '#1d4ed8' : '#2563eb'),
                           color: 'white',
                           fontWeight: '600',
                           borderRadius: '0.375rem',
                           border: 'none',
-                          cursor: 'pointer',
-                          transition: 'background-color 0.15s ease-in-out'
+                          cursor: isSending ? 'not-allowed' : 'pointer',
+                          transition: 'background-color 0.15s ease-in-out',
+                          opacity: isSending ? 0.7 : 1
                         }}
-                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseEnter={() => !isSending && setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
                       >
-                        Send Message
+                        {isSending ? 'Sending...' : 'Send Message'}
                       </button>
                     </div>
                   </div>
