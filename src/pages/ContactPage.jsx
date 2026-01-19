@@ -31,10 +31,11 @@ const ContactPage = () => {
     setError(null);
 
     try {
-      // EmailJS configuration
-      const serviceID = 'service_k04lknn'; // Replace with your EmailJS service ID
-      const templateID = 'template_7d9pqxr'; // Replace with your EmailJS template ID
-      const publicKey = '70kSXJtuWQQRrwL_-'; // Replace with your EmailJS public key
+      // EmailJS Configuration - Environment Variables
+      // To change email settings, update the .env file
+      const serviceID = import.meta.env.VITE_EMAILJS_SERVICE_ID; 
+      const templateID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID; 
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY; 
 
       // Send email using EmailJS
       const result = await emailjs.send(
@@ -46,7 +47,7 @@ const ContactPage = () => {
           phone: formData.phone,
           subject: formData.subject,
           message: formData.message,
-          to_email: 'rounakcoc567@gmail.com' // Replace with your email
+          to_email: import.meta.env.VITE_COMPANY_EMAIL
         },
         publicKey
       );
